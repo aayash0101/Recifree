@@ -13,6 +13,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
 const recipesRouter = require('./routes/recipes');
+const favoritesRouter = require('./routes/favorites');
 
 var app = express();
 
@@ -27,5 +28,6 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
 app.use('/recipes', recipesRouter);
+app.use('/favorites', favoritesRouter);
 
 module.exports = app;
