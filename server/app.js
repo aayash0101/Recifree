@@ -14,6 +14,7 @@ var usersRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
 const recipesRouter = require('./routes/recipes');
 const favoritesRouter = require('./routes/favorites');
+const ingredientsRouter = require('./routes/ingredients');
 
 var app = express();
 
@@ -29,5 +30,6 @@ app.use('/users', usersRouter);
 app.use('/auth', authRouter);
 app.use('/recipes', recipesRouter);
 app.use('/favorites', favoritesRouter);
+app.use('/ingredients', ingredientsRouter);
 
 module.exports = app;
