@@ -8,6 +8,7 @@ import { AuthProvider } from './context/AuthContext';
 import Login from './pages/Login.jsx';
 import Home from './pages/Home.jsx';
 import Signup from './pages/Signup.jsx';
+import Profile from './pages/Profile.jsx';
 
 // function App() {
 //   const [count, setCount] = useState(0)
@@ -47,6 +48,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </Router>
     </AuthProvider>
