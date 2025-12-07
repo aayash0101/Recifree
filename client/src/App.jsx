@@ -7,8 +7,10 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Login from './pages/Login.jsx';
 import Home from './pages/Home.jsx';
+import RecipeDetails from './pages/ReciipeDetails.jsx';
 import Signup from './pages/Signup.jsx';
 import Profile from './pages/Profile.jsx';
+import ShoppingList from './pages/ShoppingList.jsx';
 
 // function App() {
 //   const [count, setCount] = useState(0)
@@ -46,9 +48,11 @@ export default function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/recipes/:id" element={<RecipeDetails />} /> 
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/ingredients" element={<ShoppingList />} />
       </Routes>
     </Router>
     </AuthProvider>
