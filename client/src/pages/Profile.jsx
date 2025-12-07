@@ -1,18 +1,18 @@
-import React, {useEffect, useState} from "react";
-import { useAuth } from "../context/AuthContext";
-import NavBar from "../components/NavBar";
-import RecipeCard from "../components/RecipeCard";
+import React, { useEffect, useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import NavBar from '../components/NavBar';
+import RecipeCard from '../components/RecipeCard';
 
 export default function Profile() {
-    const { user, token, Logout } = useAuth();
-    const { edit, setEdit } = useState(false);
-    const { form, setForm } = useState({ username: '', email: ''});
-    const { recipes, setRecipes } = useState([]);
-    const { msg, setMsg } = useState('');
+    const { user, token, login } = useAuth();
+    const [edit, setEdit] = useState(false);
+    const [form, setForm] = useState({ username: '', email: '' });
+    const [recipes, setRecipes] = useState([]);
+    const [msg, setMsg] = useState('');
 
     useEffect(() => {
         if (user) {
-            setForm({ username: user.username || '', email: user.email || ''});
+            setForm({ username: user.username || '', email: user.email || '' });
             fetch(`/favorites/${user.id}`)
                 .then(res => res.json())
                 .then(setRecipes);
@@ -25,11 +25,13 @@ export default function Profile() {
 
     const handleUpdate = async (e) => {
         e.preventDefault();
-        setMsg('Profile Updated');
-        login ({ ...user, ...form}, token);
-        setEdit (False);
+        // Optionally implement backend update endpoint
+        setMsg('Profile updated!');
+        login({ ...user, ...form }, token); // update context
+        setEdit(false);
     };
-    if (!user) return <div>Loading...</div>
+
+    if (!user) return <div>Loading...</div>;
     return (
         <>
             <NavBar />
@@ -58,3 +60,7 @@ export default function Profile() {
         </>
     );
 }
+
+
+
+

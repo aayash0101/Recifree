@@ -23,7 +23,7 @@ export default function Login() {
                 body: JSON.stringify(inputs)
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.msg || 'Login failed');
+            if (!res.ok) throw new Error(data.msg || 'Invalid credentials');
             login(data.user, data.token);
             navigate('/profile');
         } catch (err) {
