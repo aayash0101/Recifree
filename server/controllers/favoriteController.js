@@ -12,7 +12,7 @@ exports.getFavorites = async (req, res) => {
 
 exports.addFavorite = async (req, res) => {
     try {
-        const user = await User.findById(req.params, userId);
+        const user = await User.findById(req.params.userId);
         if (!user) return res.status(404).json({ message: 'User not found'});
         const recipeId = req.body.recipeId;
         if (!user.savedRecipes.includes(recipeId)){
@@ -27,7 +27,7 @@ exports.addFavorite = async (req, res) => {
 
 exports.removeFavorite = async (req, res) => {
     try {
-        const user = await User.findById(req.params, userId);
+        const user = await User.findById(req.params.userId);
         if (!user) return res.status(404).json({ message: 'User not found'});
         const recipeId = req.body.recipeId;
         user.savedRecipes = user.savedRecipes.filter(
