@@ -11,6 +11,7 @@ import RecipeDetails from './pages/ReciipeDetails.jsx';
 import Signup from './pages/Signup.jsx';
 import Profile from './pages/Profile.jsx';
 import ShoppingList from './pages/ShoppingList.jsx';
+import Favorites from './pages/Favorites.jsx';
 
 // function App() {
 //   const [count, setCount] = useState(0)
@@ -53,6 +54,7 @@ export default function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/ingredients" element={<ShoppingList />} />
+        <Route path="/favorites" element={<Favorites />} />
       </Routes>
     </Router>
     </AuthProvider>
