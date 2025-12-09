@@ -7,27 +7,41 @@ export function AuthProvider({ children }) {
     const [token, setToken] = useState(localStorage.getItem('token'));
     const [loading, setLoading] = useState(true);
 
+    // Load user from localStorage on refresh
     useEffect(() => {
-        if (token) {
-            // Replace below with actual API to fetch user profile if necessary
-            const userData = JSON.parse(localStorage.getItem('user'));
-            setUser(userData || null);
-        }
-        setLoading(false);
-    }, [token]);
+        const storedUser = JSON.parse(localStorage.getItem("user"));
+        const storedToken = localStorage.getItem("token");
 
-    const login = (userData, token) => {
-        setUser(userData);
-        setToken(token);
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(userData));
+        if (storedUser && storedToken) {
+            setUser(storedUser);
+            setToken(storedToken);
+        }
+
+        setLoading(false);
+    }, []);
+
+    // Normalize and save user during login
+    const login = (apiUser, apiToken) => {
+        const normalizedUser = {
+            id: apiUser._id || apiUser.id,  // ensures consistent ID
+            username: apiUser.username,
+            email: apiUser.email,
+            image: apiUser.image || null,
+        };
+
+        setUser(normalizedUser);
+        setToken(apiToken);
+
+        localStorage.setItem("user", JSON.stringify(normalizedUser));
+        localStorage.setItem("token", apiToken);
     };
 
+    // Logout user
     const logout = () => {
         setUser(null);
         setToken(null);
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
     };
 
     return (
@@ -37,7 +51,5 @@ export function AuthProvider({ children }) {
     );
 }
 
+// Hook to access auth data
 export const useAuth = () => useContext(AuthContext);
-
-
-

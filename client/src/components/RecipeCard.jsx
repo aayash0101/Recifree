@@ -10,18 +10,32 @@ export default function RecipeCard({ recipe }) {
     // Action to add favorite
     const addFavorite = async (e) => {
         e.preventDefault();
+        console.log("FRONTEND - user object:", user);
+        console.log("FRONTEND - user.id:", user?.id);
+        console.log("FRONTEND - recipe._id:", recipe._id);
+
         setLoading(true);
-        await fetch(`/favorites/${user.id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            },
-            body: JSON.stringify({ recipeId: recipe._id })
-        });
-        setFav(true);
-        setLoading(false);
+        try {
+            const res = await fetch(`/favorites/${user.id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                },
+                body: JSON.stringify({ recipeId: recipe._id })
+            });
+
+            const data = await res.json();
+            console.log("FRONTEND - response:", data);
+
+            setFav(true);
+        } catch (err) {
+            console.error("FRONTEND - addFavorite error:", err);
+        } finally {
+            setLoading(false);
+        }
     };
+
     // Action to remove favorite
     const removeFavorite = async (e) => {
         e.preventDefault();

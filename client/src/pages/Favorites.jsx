@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
 import NavBar from '../components/NavBar';
 import FavoritesList from '../components/FavoritesList';
+import { useAuth } from '../context/AuthContext';
 
 export default function Favorites() {
     const { user } = useAuth();
@@ -15,15 +15,20 @@ export default function Favorites() {
         }
     }, [user]);
 
-    if (!user) return <div> Please login to view favorites.</div>
+    if (!user) return <div>Please login to view favorites.</div>;
 
     return (
         <>
-            <NavBar>
-                <div classname="container"></div>
+            <NavBar />
+            <div className="container">
                 <h2>My Favorites</h2>
                 <FavoritesList recipes={favorites} />
-            </NavBar>
+            </div>
         </>
-    )
+    );
 }
+
+
+
+
+
