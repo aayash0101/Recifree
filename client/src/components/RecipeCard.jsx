@@ -4,52 +4,34 @@ import { useAuth } from '../context/AuthContext';
 
 export default function RecipeCard({ recipe }) {
     const { user, token } = useAuth();
-    const [fav, setFav] = useState(recipe.isFavorite); // expects parent can send isFavorite or fallback
+    const [fav, setFav] = useState(recipe.isFavorite || false);
     const [loading, setLoading] = useState(false);
 
-    // Action to add favorite
-    const addFavorite = async (e) => {
-        e.preventDefault();
-        console.log("FRONTEND - user object:", user);
-        console.log("FRONTEND - user.id:", user?.id);
-        console.log("FRONTEND - recipe._id:", recipe._id);
+    const apiUrl = `/favorites/api/${user?.id}`;
+
+    const handleFavorite = async (add = true) => {
+        if (!user) return;
 
         setLoading(true);
         try {
-            const res = await fetch(`/favorites/${user.id}`, {
-                method: 'POST',
+            const res = await fetch(apiUrl, {
+                method: add ? 'POST' : 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                     ...(token ? { Authorization: `Bearer ${token}` } : {}),
                 },
-                body: JSON.stringify({ recipeId: recipe._id })
+                body: JSON.stringify({ recipeId: recipe._id }),
             });
 
+            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
             const data = await res.json();
-            console.log("FRONTEND - response:", data);
-
-            setFav(true);
+            console.log(`FRONTEND - ${add ? 'add' : 'remove'}Favorite response:`, data);
+            setFav(add);
         } catch (err) {
-            console.error("FRONTEND - addFavorite error:", err);
+            console.error(`FRONTEND - ${add ? 'add' : 'remove'}Favorite error:`, err);
         } finally {
             setLoading(false);
         }
-    };
-
-    // Action to remove favorite
-    const removeFavorite = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        await fetch(`/favorites/${user.id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            },
-            body: JSON.stringify({ recipeId: recipe._id })
-        });
-        setFav(false);
-        setLoading(false);
     };
 
     return (
@@ -59,7 +41,7 @@ export default function RecipeCard({ recipe }) {
                 <h3>{recipe.title}</h3>
                 <p className="truncate">{recipe.description}</p>
             </Link>
-            {/* Favorite Icon/Button */}
+
             {user && (
                 <button
                     className="fav-btn-card"
@@ -76,7 +58,7 @@ export default function RecipeCard({ recipe }) {
                     }}
                     title={fav ? 'Remove from favorites' : 'Add to favorites'}
                     disabled={loading}
-                    onClick={fav ? removeFavorite : addFavorite}
+                    onClick={() => handleFavorite(!fav)}
                 >
                     {fav ? '★' : '☆'}
                 </button>
@@ -84,8 +66,3 @@ export default function RecipeCard({ recipe }) {
         </div>
     );
 }
-
-
-
-
-

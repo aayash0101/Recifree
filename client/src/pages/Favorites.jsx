@@ -4,17 +4,22 @@ import FavoritesList from '../components/FavoritesList';
 import { useAuth } from '../context/AuthContext';
 
 export default function Favorites() {
-    const { user } = useAuth();
+    const { user, loading } = useAuth();
     const [favorites, setFavorites] = useState([]);
 
     useEffect(() => {
-        if (user) {
-            fetch(`/favorites/${user.id}`)
-                .then(res => res.json())
-                .then(setFavorites);
+        if (!loading && user?.id) {
+            fetch(`/favorites/api/${user.id}`)
+                .then(res => {
+                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                    return res.json();
+                })
+                .then(setFavorites)
+                .catch(err => console.error("Favorites error:", err));
         }
-    }, [user]);
+    }, [user, loading]);
 
+    if (loading) return <div>Loading...</div>;
     if (!user) return <div>Please login to view favorites.</div>;
 
     return (
@@ -22,13 +27,8 @@ export default function Favorites() {
             <NavBar />
             <div className="container">
                 <h2>My Favorites</h2>
-                <FavoritesList recipes={favorites} />
+                <FavoritesList favorites={favorites} />
             </div>
         </>
     );
 }
-
-
-
-
-

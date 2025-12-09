@@ -5,6 +5,7 @@ exports.getFavorites = async (req, res) => {
     try {
         const user = await User.findById(req.params.userId).populate('savedRecipes');
         if (!user) return res.status(404).json({ message: 'User not found' });
+
         res.json(user.savedRecipes);
     } catch (err) {
         console.error("GET FAVORITES ERROR:", err);
@@ -23,10 +24,14 @@ exports.addFavorite = async (req, res) => {
         if (!user) return res.status(404).json({ message: 'User not found' });
 
         const recipeId = req.body.recipeId;
-        const recipeObjectId = new mongoose.Types.ObjectId(recipeId); // ✅ Use 'new'
+        const recipeObjectId = new mongoose.Types.ObjectId(recipeId);
 
-        // Only add if not already present
-        if (!user.savedRecipes.includes(recipeObjectId)) {
+        // Proper ObjectId value comparison
+        const alreadySaved = user.savedRecipes.some(
+            id => id.toString() === recipeObjectId.toString()
+        );
+
+        if (!alreadySaved) {
             user.savedRecipes.push(recipeObjectId);
             await user.save();
         }
@@ -35,10 +40,9 @@ exports.addFavorite = async (req, res) => {
 
     } catch (err) {
         console.error("ADD FAVORITE ERROR:", err);
-        res.status(500).json({ message: 'Server error', error: err.message, stack: err.stack });
+        res.status(500).json({ message: 'Server error', error: err.message });
     }
 };
-
 
 exports.removeFavorite = async (req, res) => {
     try {
@@ -47,20 +51,18 @@ exports.removeFavorite = async (req, res) => {
         const user = await User.findById(req.params.userId);
         if (!user) return res.status(404).json({ message: 'User not found' });
 
-        // Convert recipeId to ObjectId correctly
         const recipeObjectId = new mongoose.Types.ObjectId(req.body.recipeId);
 
+        // Remove by comparing ObjectId values
         user.savedRecipes = user.savedRecipes.filter(
             id => id.toString() !== recipeObjectId.toString()
         );
 
         await user.save();
         res.json({ message: 'Recipe removed from favorites' });
+
     } catch (err) {
         console.error("REMOVE FAVORITE ERROR:", err);
         res.status(500).json({ message: 'Server error' });
     }
 };
-
-
-

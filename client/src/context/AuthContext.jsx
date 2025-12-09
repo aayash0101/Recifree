@@ -4,26 +4,27 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
-    const [token, setToken] = useState(localStorage.getItem('token'));
+    const [token, setToken] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Load user from localStorage on refresh
+    // Load user and token from localStorage on refresh
     useEffect(() => {
-        const storedUser = JSON.parse(localStorage.getItem("user"));
+        const storedUser = localStorage.getItem("user");
         const storedToken = localStorage.getItem("token");
 
-        if (storedUser && storedToken) {
-            setUser(storedUser);
+        if (storedUser && storedUser !== "null") {
+            setUser(JSON.parse(storedUser));
+        }
+        if (storedToken && storedToken !== "null") {
             setToken(storedToken);
         }
 
         setLoading(false);
     }, []);
 
-    // Normalize and save user during login
     const login = (apiUser, apiToken) => {
         const normalizedUser = {
-            id: apiUser._id || apiUser.id,  // ensures consistent ID
+            id: apiUser._id || apiUser.id,
             username: apiUser.username,
             email: apiUser.email,
             image: apiUser.image || null,
@@ -36,7 +37,6 @@ export function AuthProvider({ children }) {
         localStorage.setItem("token", apiToken);
     };
 
-    // Logout user
     const logout = () => {
         setUser(null);
         setToken(null);
@@ -51,5 +51,4 @@ export function AuthProvider({ children }) {
     );
 }
 
-// Hook to access auth data
 export const useAuth = () => useContext(AuthContext);
