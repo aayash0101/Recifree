@@ -20,7 +20,6 @@ export default function AddRecipe() {
     const [err, setErr] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // Limit fields directly inside the onChange handler
     const handleChange = e => {
         const { name, value } = e.target;
 
@@ -32,9 +31,7 @@ export default function AddRecipe() {
             image: 300,
         };
 
-        // If field has a limit → trim automatically
         const limitedValue = limits[name] ? value.slice(0, limits[name]) : value;
-
         setForm({ ...form, [name]: limitedValue });
     };
 
@@ -73,98 +70,148 @@ export default function AddRecipe() {
         setLoading(false);
     };
 
-    if (!user) return <div>Please log in to add a recipe.</div>;
+    if (!user) {
+        return (
+            <>
+                <NavBar />
+                <div className="form-container">
+                    <div style={{ textAlign: 'center', color: '#666' }}>
+                        <p>Please log in to add a recipe.</p>
+                    </div>
+                </div>
+            </>
+        );
+    }
 
     return (
         <>
             <NavBar />
-            <div className="form-container">
-                <h2>Add a Recipe</h2>
+            <div className="add-recipe-container">
+                <div className="add-recipe-header">
+                    <h2>Create New Recipe</h2>
+                    <p className="add-recipe-subtitle">Share your culinary creation with the community</p>
+                </div>
 
-                <form onSubmit={handleSubmit} className="auth-form">
-                    <input
-                        type="text"
-                        name="title"
-                        placeholder="Recipe Title"
-                        value={form.title}
-                        onChange={handleChange}
-                        required
-                        maxLength={60}
-                    />
+                <form onSubmit={handleSubmit} className="add-recipe-form">
+                    {err && <div className="error-msg">{err}</div>}
 
-                    <textarea
-                        name="description"
-                        placeholder="Short description (max 300 chars)"
-                        value={form.description}
-                        onChange={handleChange}
-                        required
-                        maxLength={300}
-                    />
+                    <div className="form-group">
+                        <label htmlFor="title">Recipe Title *</label>
+                        <input
+                            id="title"
+                            type="text"
+                            name="title"
+                            placeholder="e.g., Grandma's Chocolate Chip Cookies"
+                            value={form.title}
+                            onChange={handleChange}
+                            required
+                            maxLength={60}
+                        />
+                        <span className="char-count">{form.title.length}/60</span>
+                    </div>
 
-                    <input
-                        type="text"
-                        name="ingredients"
-                        placeholder="Ingredients (comma separated)"
-                        value={form.ingredients}
-                        onChange={handleChange}
-                        required
-                        maxLength={300}
-                    />
+                    <div className="form-group">
+                        <label htmlFor="description">Description *</label>
+                        <textarea
+                            id="description"
+                            name="description"
+                            placeholder="A brief description of your recipe..."
+                            value={form.description}
+                            onChange={handleChange}
+                            required
+                            maxLength={300}
+                            rows={3}
+                        />
+                        <span className="char-count">{form.description.length}/300</span>
+                    </div>
 
-                    <textarea
-                        name="instructions"
-                        placeholder="Instructions (one step per line)"
-                        value={form.instructions}
-                        onChange={handleChange}
-                        required
-                        maxLength={1000}
-                    />
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label htmlFor="category">Category *</label>
+                            <select
+                                id="category"
+                                name="category"
+                                value={form.category}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Select a category</option>
+                                <option value="Breakfast">🌅 Breakfast</option>
+                                <option value="Lunch">🌞 Lunch</option>
+                                <option value="Dinner">🌙 Dinner</option>
+                                <option value="Snacks">🍿 Snacks</option>
+                                <option value="Dessert">🍰 Dessert</option>
+                                <option value="Beverage">☕ Beverage</option>
+                                <option value="Healthy">🥗 Healthy</option>
+                                <option value="Vegetarian">🥕 Vegetarian</option>
+                                <option value="Vegan">🌱 Vegan</option>
+                            </select>
+                        </div>
 
-                    {/* CATEGORY DROPDOWN (Prevents random text entries) */}
-                    <select
-                        name="category"
-                        value={form.category}
-                        onChange={handleChange}
-                        required
-                    >
-                        <option value="">Select Category</option>
-                        <option value="Breakfast">Breakfast</option>
-                        <option value="Lunch">Lunch</option>
-                        <option value="Dinner">Dinner</option>
-                        <option value="Snacks">Snacks</option>
-                        <option value="Dessert">Dessert</option>
-                        <option value="Beverage">Beverage</option>
-                        <option value="Healthy">Healthy</option>
-                        <option value="Vegetarian">Vegetarian</option>
-                        <option value="Vegan">Vegan</option>
-                    </select>
+                        <div className="form-group">
+                            <label htmlFor="cookingTime">Cooking Time (min) *</label>
+                            <input
+                                id="cookingTime"
+                                type="number"
+                                name="cookingTime"
+                                placeholder="e.g., 30"
+                                value={form.cookingTime}
+                                onChange={handleChange}
+                                required
+                                min={1}
+                                max={500}
+                            />
+                        </div>
+                    </div>
 
-                    <input
-                        type="text"
-                        name="image"
-                        placeholder="Image URL (optional)"
-                        value={form.image}
-                        onChange={handleChange}
-                        maxLength={300}
-                    />
+                    <div className="form-group">
+                        <label htmlFor="ingredients">Ingredients *</label>
+                        <textarea
+                            id="ingredients"
+                            name="ingredients"
+                            placeholder="Enter ingredients separated by commas&#10;e.g., 2 cups flour, 1 cup sugar, 3 eggs"
+                            value={form.ingredients}
+                            onChange={handleChange}
+                            required
+                            maxLength={300}
+                            rows={4}
+                        />
+                        <span className="char-count">{form.ingredients.length}/300</span>
+                    </div>
 
-                    <input
-                        type="number"
-                        name="cookingTime"
-                        placeholder="Cooking Time (minutes)"
-                        value={form.cookingTime}
-                        onChange={handleChange}
-                        required
-                        min={1}
-                        max={500}
-                    />
+                    <div className="form-group">
+                        <label htmlFor="instructions">Instructions *</label>
+                        <textarea
+                            id="instructions"
+                            name="instructions"
+                            placeholder="Enter each step on a new line&#10;&#10;Step 1: Preheat oven to 350°F&#10;Step 2: Mix dry ingredients..."
+                            value={form.instructions}
+                            onChange={handleChange}
+                            required
+                            maxLength={1000}
+                            rows={6}
+                        />
+                        <span className="char-count">{form.instructions.length}/1000</span>
+                    </div>
 
-                    <button type="submit" disabled={loading}>
-                        {loading ? 'Adding...' : 'Add Recipe'}
+                    <div className="form-group">
+                        <label htmlFor="image">Image URL</label>
+                        <input
+                            id="image"
+                            type="text"
+                            name="image"
+                            placeholder="https://example.com/image.jpg (optional)"
+                            value={form.image}
+                            onChange={handleChange}
+                            maxLength={300}
+                        />
+                        <span className="char-count">{form.image.length}/300</span>
+                    </div>
+
+                    <button type="submit" className="submit-btn" disabled={loading}>
+                        {loading ? 'Creating Recipe...' : 'Create Recipe'}
                     </button>
                 </form>
-
-                {err && <div className="error-msg">{err}</div>}
             </div>
         </>
     );

@@ -536,3 +536,203 @@ body {
     height: 240px;
   }
 }
+
+/* Add these styles to your existing CSS file */
+
+.add-recipe-container {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  padding: 3rem 3rem 3.5rem 3rem;
+  margin: 3rem auto;
+  max-width: 680px;
+  border: 1px solid #f0f0f0;
+}
+
+.add-recipe-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.add-recipe-header h2 {
+  margin: 0 0 0.5rem 0;
+  color: #1a1a1a;
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.add-recipe-subtitle {
+  margin: 0;
+  color: #666;
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+
+.add-recipe-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #333;
+  font-weight: 500;
+  font-size: 0.9rem;
+  letter-spacing: 0.2px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.add-recipe-form input,
+.add-recipe-form textarea,
+.add-recipe-form select {
+  width: 100%;
+  padding: 0.9rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  background: #fafafa;
+  font-family: inherit;
+  color: #1a1a1a;
+}
+
+.add-recipe-form input:focus,
+.add-recipe-form textarea:focus,
+.add-recipe-form select:focus {
+  outline: none;
+  border-color: #ff6b35;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.08);
+}
+
+.add-recipe-form textarea {
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.6;
+}
+
+.add-recipe-form select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.2rem;
+  padding-right: 3rem;
+}
+
+.add-recipe-form input::placeholder,
+.add-recipe-form textarea::placeholder {
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.char-count {
+  position: absolute;
+  bottom: -1.3rem;
+  right: 0;
+  font-size: 0.8rem;
+  color: #999;
+  font-weight: 400;
+}
+
+.submit-btn {
+  width: 100%;
+  background: #ff6b35;
+  color: #fff;
+  padding: 1rem 0;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: all 0.2s ease;
+  letter-spacing: 0.3px;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background: #e85a2a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.25);
+}
+
+.submit-btn:disabled {
+  background: #ffb39e;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.error-msg {
+  color: #ff6b35;
+  font-weight: 500;
+  text-align: center;
+  background: #fff5f0;
+  padding: 0.9rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  border: 1px solid #ffe8df;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .add-recipe-container {
+    padding: 2rem 1.5rem 2.5rem 1.5rem;
+    margin: 2rem 1rem;
+  }
+
+  .add-recipe-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .add-recipe-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .add-recipe-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+
+  .add-recipe-form {
+    gap: 1.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-recipe-container {
+    padding: 1.5rem 1.2rem 2rem 1.2rem;
+  }
+
+  .add-recipe-header h2 {
+    font-size: 1.35rem;
+  }
+
+  .add-recipe-form input,
+  .add-recipe-form textarea,
+  .add-recipe-form select {
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+  }
+}

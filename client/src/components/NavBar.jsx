@@ -14,15 +14,14 @@ export default function NavBar() {
 
             <div className='nav-links'>
                 <Link to="/">Home</Link>
-                <Link to="/recipes">Recipes</Link>
+                
 
                 {userId && <Link to="/favorites">Favorites</Link>}
-
+                <Link to="/add-recipe">Create</Link> 
                 <Link to="/ingredients">Shopping List</Link>
 
                 {user ? (
                     <>
-                        <Link to="/add-recipe">Add Recipe</Link>                    
                         <Link to="/profile">Profile</Link>
                         <button className='nav-btn' onClick={logout}>Logout</button>
                     </>
