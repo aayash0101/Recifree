@@ -1,23 +1,23 @@
 const Recipe = require('../models/Recipe');
 
 exports.getAllRecipes = async (req, res) => {
-    try {
-        const recipes = await Recipe.find();
-        res.json(recipes);
-    } catch (err) {
-        res.status(500).json({ message: 'Server error'});
-    }
+  try {
+    const recipes = await Recipe.find();
+    res.json(recipes);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
 };
 
-exports.getRecipe = async (req,res) => {
-    try {
-        const recipe = await Recipe.findById(req.params.id);
-        if (!recipe) 
-            return res.status(404).json({ message: 'Recipe not found'});
-            res.json(recipe);
-        } catch (err) {
-            res.status(500).json({ message: 'Server error'});
-        }
+exports.getRecipe = async (req, res) => {
+  try {
+    const recipe = await Recipe.findById(req.params.id);
+    if (!recipe)
+      return res.status(404).json({ message: 'Recipe not found' });
+    res.json(recipe);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
 };
 
 exports.seedRecipes = async (req, res) => {
@@ -75,10 +75,12 @@ exports.seedRecipes = async (req, res) => {
 
 exports.createRecipe = async (req, res) => {
   try {
-    const { title, description, ingredients, instructions, category, image, cookingTime } = req.body;
-    if (!title || !description || !ingredients?.length || !instructions?.length || !category || !cookingTime) {
+    const { title, description, ingredients, instructions, category, image, cookingTime, createdBy } = req.body;
+
+    if (!title || !description || !ingredients?.length || !instructions?.length || !category || !cookingTime || !createdBy) {
       return res.status(400).json({ msg: 'All required fields must be provided.' });
     }
+
     const recipe = new Recipe({
       title,
       description,
@@ -87,13 +89,17 @@ exports.createRecipe = async (req, res) => {
       category,
       image,
       cookingTime,
+      createdBy,
     });
+
     await recipe.save();
     res.json(recipe);
   } catch (err) {
+    console.error('Create Recipe Error:', err);
     res.status(500).json({ msg: 'Error creating recipe.' });
   }
 };
+
 
 exports.deleteRecipe = async (req, res) => {
   try {
@@ -115,6 +121,6 @@ exports.getUserRecipes = async (req, res) => {
     const recipes = await Recipe.find({ createdBy: userId }).sort({ _id: -1 });
     res.json(recipes);
   } catch (err) {
-    res.status(500).json({ msg : 'Error fetching user recipes.'});
+    res.status(500).json({ msg: 'Error fetching user recipes.' });
   }
-};
+}

@@ -15,11 +15,13 @@ export default function AddRecipe() {
         category: '',
         image: '',
         cookingTime: '',
+        createdBy: user?.id || '', // keep for frontend reference
     });
 
     const [err, setErr] = useState('');
     const [loading, setLoading] = useState(false);
 
+    // Handles input changes with character limits
     const handleChange = e => {
         const { name, value } = e.target;
 
@@ -35,14 +37,17 @@ export default function AddRecipe() {
         setForm({ ...form, [name]: limitedValue });
     };
 
+    // Submit handler
     const handleSubmit = async e => {
         e.preventDefault();
         setErr('');
         setLoading(true);
 
         try {
+            // Prepare payload
             const body = {
                 ...form,
+                userId: form.createdBy, // send userId for backend
                 ingredients: form.ingredients
                     .split(',')
                     .map(s => s.trim())
@@ -53,21 +58,23 @@ export default function AddRecipe() {
                     .filter(Boolean),
             };
 
+            // Send request to backend (Vite proxy handles /recipes)
             const res = await fetch('/recipes', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body),
             });
 
-            const data = await res.json();
+            const data = await res.json().catch(() => ({}));
+
             if (!res.ok) throw new Error(data.msg || 'Could not add recipe');
 
-            navigate('/');
+            navigate('/'); // redirect to home after success
         } catch (e) {
             setErr(e.message);
+        } finally {
+            setLoading(false);
         }
-
-        setLoading(false);
     };
 
     if (!user) {
