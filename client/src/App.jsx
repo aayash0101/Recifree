@@ -13,6 +13,7 @@ import Profile from './pages/Profile.jsx';
 import ShoppingList from './pages/ShoppingList.jsx';
 import Favorites from './pages/Favorites.jsx';
 import RecipeDetails from './pages/ReciipeDetails.jsx';
+import AddRecipe from './pages/AddRecipe.jsx';
 
 export default function App() {
   return (
@@ -39,6 +40,7 @@ function AppRoutes() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/ingredients" element={<ShoppingList />} />
         <Route path="/favorites" element={<Favorites />} />
+        <Route path="/add-recipe" element={<AddRecipe />} />
       </Routes>
     </Router>
   );

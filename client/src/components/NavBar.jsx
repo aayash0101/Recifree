@@ -22,6 +22,7 @@ export default function NavBar() {
 
                 {user ? (
                     <>
+                        <Link to="/add-recipe">Add Recipe</Link>                    
                         <Link to="/profile">Profile</Link>
                         <button className='nav-btn' onClick={logout}>Logout</button>
                     </>
