@@ -11,14 +11,12 @@ export function AuthProvider({ children }) {
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
         const storedToken = localStorage.getItem("token");
-
         if (storedUser && storedUser !== "null") {
             setUser(JSON.parse(storedUser));
         }
         if (storedToken && storedToken !== "null") {
             setToken(storedToken);
         }
-
         setLoading(false);
     }, []);
 
@@ -28,11 +26,11 @@ export function AuthProvider({ children }) {
             username: apiUser.username,
             email: apiUser.email,
             image: apiUser.image || null,
+            bio: apiUser.bio || 'Home Chef and Food Enthusiast | Sharing My Favorite Recipe and Cooking Tips | Making Cooking Easier For Everyone',
+            tags: apiUser.tags || ['Italian Cuisine', 'Baking', 'Healthy']
         };
-
         setUser(normalizedUser);
         setToken(apiToken);
-
         localStorage.setItem("user", JSON.stringify(normalizedUser));
         localStorage.setItem("token", apiToken);
     };
