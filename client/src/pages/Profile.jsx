@@ -13,9 +13,13 @@ export default function Profile() {
     useEffect(() => {
         if (user) {
             setForm({ username: user.username || '', email: user.email || '' });
-            fetch(`/favorites/${user.id}`)
-                .then(res => res.json())
-                .then(setRecipes);
+            fetch(`/favorites/api/${user.id}`)
+                .then(res => {
+                    if (!res.ok) throw new Error("Failed to fetch favorites");
+                    return res.json();
+                })
+                .then(setRecipes)
+                .catch(err => console.error("Favorites fetch error:", err));
         }
     }, [user]);
 

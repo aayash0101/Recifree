@@ -72,3 +72,25 @@ exports.seedRecipes = async (req, res) => {
     res.status(500).json({ msg: 'Seed Error' });
   }
 };
+
+exports.createRecipe = async (req, res) => {
+  try {
+    const { title, description, ingredients, instructions, category, image, cookingTime } = req.body;
+    if (!title || !description || !ingredients?.length || !instructions?.length || !category || !cookingTime) {
+      return res.status(400).json({ msg: 'All required fields must be provided.' });
+    }
+    const recipe = new Recipe({
+      title,
+      description,
+      ingredients,
+      instructions,
+      category,
+      image,
+      cookingTime,
+    });
+    await recipe.save();
+    res.json(recipe);
+  } catch (err) {
+    res.status(500).json({ msg: 'Error creating recipe.' });
+  }
+};
