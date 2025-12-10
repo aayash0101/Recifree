@@ -154,7 +154,7 @@ export default function Profile() {
                         </div>
                         <div className="profile-identity">
                             <h1>{form.username}</h1>
-                            <p className="profile-handle">@{form.username.toLowerCase().replace(/\s/g, '')}</p>
+                            <p className="profile-handle">@{form.email.toLowerCase().replace(/\s/g, '')}</p>
                         </div>
                     </div>
 
