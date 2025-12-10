@@ -94,3 +94,27 @@ exports.createRecipe = async (req, res) => {
     res.status(500).json({ msg: 'Error creating recipe.' });
   }
 };
+
+exports.deleteRecipe = async (req, res) => {
+  try {
+    const recipe = await Recipe.findById(req.params.id);
+    if (!recipe) return res.status(404).json({ msg: 'Recipe not found' });
+    if (recipe.createdBy.toString() !== req.body.userId) {
+      return res.status(403).json({ msg: 'Not authorized to delete this recipe.' });
+    }
+    await recipe.deleteOne();
+    res.json({ msg: 'Recipe deleted.' });
+  } catch (err) {
+    res.status(500).json({ msg: 'Error deleting recipe.' });
+  }
+};
+
+exports.getUserRecipes = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const recipes = await Recipe.find({ createdBy: userId }).sort({ _id: -1 });
+    res.json(recipes);
+  } catch (err) {
+    res.status(500).json({ msg : 'Error fetching user recipes.'});
+  }
+};
