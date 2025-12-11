@@ -3,23 +3,35 @@ const Recipe = require('../models/Recipe');
 exports.getAllRecipes = async (req, res) => {
   try {
     const recipes = await Recipe.find();
-    res.json(recipes);
+    const recipesWithRating = recipes.map(recipe => {
+      const avgRating = recipe.reviews && recipe.reviews.length > 0
+        ? (recipe.reviews.reduce((sum, r) => sum + r.rating, 0) / recipe.reviews.length).toFixed(1)
+        : 0;
+      return { ...recipe.toObject(), averageRating: parseFloat(avgRating), reviewCount: recipe.reviews?.length || 0 };
+    });
+    res.json(recipesWithRating);
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ msg: 'Server Error' });
   }
 };
 
 exports.getRecipe = async (req, res) => {
   try {
     const recipe = await Recipe.findById(req.params.id);
-    if (!recipe)
-      return res.status(404).json({ message: 'Recipe not found' });
-    res.json(recipe);
+    if (!recipe) return res.status(404).json({ msg: 'Recipe not found' });
+    const avgRating = recipe.reviews && recipe.reviews.length > 0
+      ? (recipe.reviews.reduce((sum, r) => sum + r.rating, 0) / recipe.reviews.length).toFixed(1)
+      : 0;
+    const recipeObj = recipe.toObject();
+    recipeObj.averageRating = parseFloat(avgRating);
+    recipeObj.reviewCount = recipe.reviews?.length || 0;
+    res.json(recipeObj);
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ msg: 'Server Error' });
   }
 };
 
+// Seed sample recipes
 exports.seedRecipes = async (req, res) => {
   try {
     const count = await Recipe.countDocuments();
@@ -76,11 +88,9 @@ exports.seedRecipes = async (req, res) => {
 exports.createRecipe = async (req, res) => {
   try {
     const { title, description, ingredients, instructions, category, image, cookingTime, createdBy } = req.body;
-
     if (!title || !description || !ingredients?.length || !instructions?.length || !category || !cookingTime || !createdBy) {
       return res.status(400).json({ msg: 'All required fields must be provided.' });
     }
-
     const recipe = new Recipe({
       title,
       description,
@@ -91,15 +101,12 @@ exports.createRecipe = async (req, res) => {
       cookingTime,
       createdBy,
     });
-
     await recipe.save();
     res.json(recipe);
   } catch (err) {
-    console.error('Create Recipe Error:', err);
     res.status(500).json({ msg: 'Error creating recipe.' });
   }
 };
-
 
 exports.deleteRecipe = async (req, res) => {
   try {
@@ -119,8 +126,52 @@ exports.getUserRecipes = async (req, res) => {
   try {
     const userId = req.params.userId;
     const recipes = await Recipe.find({ createdBy: userId }).sort({ _id: -1 });
-    res.json(recipes);
+    const recipesWithRating = recipes.map(recipe => {
+      const avgRating = recipe.reviews && recipe.reviews.length > 0
+        ? (recipe.reviews.reduce((sum, r) => sum + r.rating, 0) / recipe.reviews.length).toFixed(1)
+        : 0;
+      return { ...recipe.toObject(), averageRating: parseFloat(avgRating), reviewCount: recipe.reviews?.length || 0 };
+    });
+    res.json(recipesWithRating);
   } catch (err) {
     res.status(500).json({ msg: 'Error fetching user recipes.' });
   }
-}
+};
+
+exports.addReview = async (req, res) => {
+  try {
+    const { rating, comment, userId, username } = req.body;
+    if (!rating || rating < 1 || rating > 5) {
+      return res.status(400).json({ msg: 'Rating must be between 1 and 5.' });
+    }
+    const recipe = await Recipe.findById(req.params.id);
+    if (!recipe) return res.status(404).json({ msg: 'Recipe not found' });
+    
+    // Check if user already reviewed
+    const existingReview = recipe.reviews.find(r => r.userId.toString() === userId);
+    if (existingReview) {
+      return res.status(400).json({ msg: 'You have already reviewed this recipe.' });
+    }
+    
+    recipe.reviews.push({ rating, comment, userId, username });
+    await recipe.save();
+    
+    const avgRating = recipe.reviews.length > 0
+      ? (recipe.reviews.reduce((sum, r) => sum + r.rating, 0) / recipe.reviews.length).toFixed(1)
+      : 0;
+    
+    res.json({ 
+      msg: 'Review added successfully.',
+      averageRating: parseFloat(avgRating),
+      reviewCount: recipe.reviews.length
+    });
+  } catch (err) {
+    res.status(500).json({ msg: 'Error adding review.' });
+  }
+};
+
+
+
+
+
+
