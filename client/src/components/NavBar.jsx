@@ -18,7 +18,7 @@ export default function NavBar() {
 
                 {userId && <Link to="/favorites">Favorites</Link>}
                 <Link to="/add-recipe">Create</Link> 
-                <Link to="/ingredients">Shopping List</Link>
+                <Link to="/search">Search</Link>
 
                 {user ? (
                     <>

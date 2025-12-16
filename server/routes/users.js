@@ -81,7 +81,7 @@ router.put('/profile', auth, async (req, res) => {
     }
 });
 
-/* SEARCH users */
+/* SEARCH users - MUST come before /:id route */
 router.get('/search', async (req, res) => {
     try {
         const { q } = req.query;
@@ -102,12 +102,12 @@ router.get('/search', async (req, res) => {
         
         res.json(users);
     } catch (err) {
-        console.error(err);
+        console.error('Search error:', err);
         res.status(500).json({ message: 'Server error' });
     }
 });
 
-/* FOLLOW a user */
+/* FOLLOW a user - Specific routes before /:id */
 router.post('/:id/follow', auth, async (req, res) => {
     try {
         const userToFollow = await User.findById(req.params.id);
@@ -168,7 +168,7 @@ router.delete('/:id/follow', auth, async (req, res) => {
     }
 });
 
-/* GET user by ID (public profile) */
+/* GET user by ID (public profile) - MUST come AFTER all specific routes */
 router.get('/:id', async (req, res) => {
     try {
         const user = await User.findById(req.params.id).select('-password -email');

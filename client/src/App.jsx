@@ -14,6 +14,7 @@ import ShoppingList from './pages/ShoppingList.jsx';
 import Favorites from './pages/Favorites.jsx';
 import RecipeDetails from './pages/ReciipeDetails.jsx';
 import AddRecipe from './pages/AddRecipe.jsx';
+import Search from './pages/Search';
 
 export default function App() {
   return (
@@ -41,6 +42,7 @@ function AppRoutes() {
         <Route path="/ingredients" element={<ShoppingList />} />
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/add-recipe" element={<AddRecipe />} />
+        <Route path="/search" element={<Search />} />
       </Routes>
     </Router>
   );
