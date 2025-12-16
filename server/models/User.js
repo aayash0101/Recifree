@@ -32,6 +32,14 @@ const UserSchema = new mongoose.Schema({
     savedRecipes: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Recipe'
+    }],
+    followers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    following: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }]
 }, {
     timestamps: true
