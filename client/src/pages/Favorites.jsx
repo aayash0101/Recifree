@@ -9,9 +9,9 @@ export default function Favorites() {
 
     useEffect(() => {
         if (!loading && user?.id) {
-            fetch(`/favorites/api/${user.id}`)
+            fetch(`/favorites/api/${user.id}`)  // Fixed: use parentheses, not backticks
                 .then(res => {
-                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);  // Fixed
                     return res.json();
                 })
                 .then(setFavorites)

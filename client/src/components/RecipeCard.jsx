@@ -10,6 +10,7 @@ export default function RecipeCard({ recipe }) {
     // Action to add favorite
     const addFavorite = async (e) => {
         e.preventDefault();
+        e.stopPropagation();
         setLoading(true);
         await fetch(`/favorites/api/${user.id}`, {
             method: 'POST',
@@ -26,6 +27,7 @@ export default function RecipeCard({ recipe }) {
     // Action to remove favorite
     const removeFavorite = async (e) => {
         e.preventDefault();
+        e.stopPropagation();
         setLoading(true);
         await fetch(`/favorites/api/${user.id}`, {
             method: 'DELETE',
@@ -65,11 +67,60 @@ export default function RecipeCard({ recipe }) {
     };
 
     return (
-        <div className="recipe-card" style={{ position: 'relative' }}>
+        <div className="recipe-card">
             <Link to={`/recipes/${recipe._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <img src={recipe.image || 'https://via.placeholder.com/200'} alt={recipe.title} className="recipe-card-img" />
-                <h3>{recipe.title}</h3>
-                <p className="truncate">{recipe.description}</p>
+                
+                {/* Title with Heart Button */}
+                <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'space-between',
+                    gap: '8px',
+                    margin: '1rem 1.2rem 0.4rem 1.2rem'
+                }}>
+                    <h3 style={{ margin: 0, flex: 1 }}>{recipe.title}</h3>
+                    
+                    {/* Favorite Heart Button */}
+                    {user && (
+                        <button
+                            className="fav-heart-btn"
+                            title={fav ? 'Remove from favorites' : 'Add to favorites'}
+                            disabled={loading}
+                            onClick={fav ? removeFavorite : addFavorite}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                padding: '4px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                transition: 'transform 0.2s ease',
+                                flexShrink: 0
+                            }}
+                            onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
+                            onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                        >
+                            <svg 
+                                width="22" 
+                                height="22" 
+                                viewBox="0 0 24 24" 
+                                fill={fav ? '#ff6b35' : 'none'}
+                                stroke={fav ? '#ff6b35' : '#999'}
+                                strokeWidth="2" 
+                                strokeLinecap="round" 
+                                strokeLinejoin="round"
+                                style={{ transition: 'all 0.2s ease' }}
+                            >
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                        </button>
+                    )}
+                </div>
+                
+                <p className="truncate" style={{ margin: '0 1.2rem 1.2rem 1.2rem' }}>{recipe.description}</p>
+                
                 <div style={{ marginTop: '10px', padding: '0 15px 12px 15px' }}>
                     {recipe.averageRating > 0 ? (
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '6px' }}>
@@ -85,28 +136,6 @@ export default function RecipeCard({ recipe }) {
                     )}
                 </div>
             </Link>
-            {/* Favorite Icon/Button */}
-            {user && (
-                <button
-                    className="fav-btn-card"
-                    style={{
-                        position: 'absolute',
-                        top: 12,
-                        right: 15,
-                        zIndex: 2,
-                        fontSize: 20,
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        color: fav ? '#e17055' : '#b2bec3'
-                    }}
-                    title={fav ? 'Remove from favorites' : 'Add to favorites'}
-                    disabled={loading}
-                    onClick={fav ? removeFavorite : addFavorite}
-                >
-                    {fav ? '★' : '☆'}
-                </button>
-            )}
         </div>
     );
 }
