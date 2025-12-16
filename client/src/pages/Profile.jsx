@@ -9,10 +9,14 @@ export default function Profile() {
     const [form, setForm] = useState({ username: '', email: '', bio: '', tags: [] });
     const [recipes, setRecipes] = useState([]);
     const [favorites, setFavorites] = useState([]);
+    const [followers, setFollowers] = useState([]);
+    const [following, setFollowing] = useState([]);
     const [msg, setMsg] = useState('');
     const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState('published');
     const [tagInput, setTagInput] = useState('');
+    const [showFollowersModal, setShowFollowersModal] = useState(false);
+    const [showFollowingModal, setShowFollowingModal] = useState(false);
 
     useEffect(() => {
         if (!user) return;
@@ -48,8 +52,21 @@ export default function Profile() {
             }
         };
 
+        const fetchUserDetails = async () => {
+            try {
+                const res = await fetch(`/users/${user.id}`);
+                if (!res.ok) throw new Error('Failed to fetch user details');
+                const data = await res.json();
+                setFollowers(data.followers || []);
+                setFollowing(data.following || []);
+            } catch (err) {
+                console.error('Error fetching user details:', err);
+            }
+        };
+
         fetchRecipes();
         fetchFavorites();
+        fetchUserDetails();
     }, [user]);
 
     const handleChange = (e) => {
@@ -328,7 +345,7 @@ export default function Profile() {
                     </div>
                 )}
 
-                {/* Stats Section - Now shows actual favorites count */}
+                {/* Stats Section - Now shows real data */}
                 <div className="profile-stats">
                     <div className="stat-item">
                         <div className="stat-icon">📝</div>
@@ -337,11 +354,26 @@ export default function Profile() {
                             <div className="stat-value">{recipes.length}</div>
                         </div>
                     </div>
-                    <div className="stat-item">
+                    <div 
+                        className="stat-item stat-clickable" 
+                        onClick={() => setShowFollowersModal(true)}
+                        style={{ cursor: 'pointer' }}
+                    >
                         <div className="stat-icon">👥</div>
                         <div className="stat-content">
                             <div className="stat-label">Followers</div>
-                            <div className="stat-value">500</div>
+                            <div className="stat-value">{followers.length}</div>
+                        </div>
+                    </div>
+                    <div 
+                        className="stat-item stat-clickable" 
+                        onClick={() => setShowFollowingModal(true)}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <div className="stat-icon">➕</div>
+                        <div className="stat-content">
+                            <div className="stat-label">Following</div>
+                            <div className="stat-value">{following.length}</div>
                         </div>
                     </div>
                     <div className="stat-item">
@@ -353,7 +385,7 @@ export default function Profile() {
                     </div>
                 </div>
 
-                {/* Tabs Section - Added Favorites tab */}
+                {/* Tabs Section */}
                 <div className="profile-tabs">
                     <button 
                         className={`tab-btn ${activeTab === 'published' ? 'active' : ''}`}
@@ -445,6 +477,96 @@ export default function Profile() {
                     )}
                 </div>
             </div>
+
+            {/* Followers Modal */}
+            {showFollowersModal && (
+                <div className="modal-overlay" onClick={() => setShowFollowersModal(false)}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>Followers ({followers.length})</h2>
+                            <button className="modal-close" onClick={() => setShowFollowersModal(false)}>×</button>
+                        </div>
+                        <div className="modal-body">
+                            {followers.length === 0 ? (
+                                <p style={{ textAlign: 'center', color: '#666' }}>No followers yet</p>
+                            ) : (
+                                <div className="users-list">
+                                    {followers.map((followerId) => (
+                                        <UserListItem key={followerId} userId={followerId} />
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Following Modal */}
+            {showFollowingModal && (
+                <div className="modal-overlay" onClick={() => setShowFollowingModal(false)}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>Following ({following.length})</h2>
+                            <button className="modal-close" onClick={() => setShowFollowingModal(false)}>×</button>
+                        </div>
+                        <div className="modal-body">
+                            {following.length === 0 ? (
+                                <p style={{ textAlign: 'center', color: '#666' }}>Not following anyone yet</p>
+                            ) : (
+                                <div className="users-list">
+                                    {following.map((followingId) => (
+                                        <UserListItem key={followingId} userId={followingId} />
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
+    );
+}
+
+// Helper component to display user in the list
+function UserListItem({ userId }) {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const res = await fetch(`/users/${userId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setUser(data);
+                }
+            } catch (err) {
+                console.error('Error fetching user:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUser();
+    }, [userId]);
+
+    if (loading) {
+        return <div className="user-list-item loading">Loading...</div>;
+    }
+
+    if (!user) {
+        return null;
+    }
+
+    return (
+        <div className="user-list-item">
+            <div className="user-avatar-small">
+                {user.username?.charAt(0).toUpperCase()}
+            </div>
+            <div className="user-info">
+                <div className="user-name">{user.username}</div>
+                {user.bio && <div className="user-bio-small">{user.bio.slice(0, 50)}...</div>}
+            </div>
+        </div>
     );
 }
