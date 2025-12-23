@@ -119,7 +119,21 @@ export default function RecipeCard({ recipe }) {
                     )}
                 </div>
                 
-                <p className="truncate" style={{ margin: '0 1.2rem 1.2rem 1.2rem' }}>{recipe.description}</p>
+                <p className="truncate" style={{ margin: '0 1.2rem 0.6rem 1.2rem' }}>{recipe.description}</p>
+                
+                {/* Servings and Cooking Time */}
+                <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'center', 
+                    gap: '16px', 
+                    padding: '0 1.2rem',
+                    fontSize: '0.9em',
+                    color: '#555',
+                    marginBottom: '8px'
+                }}>
+                    <span>🍽️ {recipe.servings} {recipe.servings === 1 ? 'serving' : 'servings'}</span>
+                    <span>⏱️ {recipe.cookingTime} min</span>
+                </div>
                 
                 <div style={{ marginTop: '10px', padding: '0 15px 12px 15px' }}>
                     {recipe.averageRating > 0 ? (

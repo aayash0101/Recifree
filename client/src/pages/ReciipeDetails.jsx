@@ -115,7 +115,8 @@ export default function RecipeDetails() {
                     <h2>{recipe.title}</h2>
                     <div className="details-meta">
                         <span className="badge">{recipe.category}</span>
-                        <span>Cooking Time: {recipe.cookingTime} min</span>
+                        <span>🍽️ Servings: {recipe.servings}</span>
+                        <span>⏱️ Cooking Time: {recipe.cookingTime} min</span>
                         {recipe.averageRating > 0 && (
                             <div style={{ marginTop: '10px' }}>
                                 {renderStars(recipe.averageRating)}

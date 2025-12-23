@@ -10,6 +10,7 @@ export default function AddRecipe() {
     const [form, setForm] = useState({
         title: '',
         description: '',
+        servings: '',
         ingredients: '',
         instructions: '',
         category: '',
@@ -48,6 +49,7 @@ export default function AddRecipe() {
             const body = {
                 ...form,
                 userId: form.createdBy, // send userId for backend
+                servings: parseInt(form.servings, 10),
                 ingredients: form.ingredients
                     .split(',')
                     .map(s => s.trim())
@@ -130,6 +132,21 @@ export default function AddRecipe() {
                             rows={3}
                         />
                         <span className="char-count">{form.description.length}/300</span>
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="servings">Servings *</label>
+                        <input
+                            id="servings"
+                            type="number"
+                            name="servings"
+                            placeholder="e.g., 4"
+                            value={form.servings}
+                            onChange={handleChange}
+                            required
+                            min={1}
+                            max={100}
+                        />
                     </div>
 
                     <div className="form-row">

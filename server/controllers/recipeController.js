@@ -46,7 +46,6 @@ exports.getRecipe = async (req, res) => {
   }
 };
 
-
 exports.seedRecipes = async (req, res) => {
   try {
     const count = await Recipe.countDocuments();
@@ -56,6 +55,7 @@ exports.seedRecipes = async (req, res) => {
       {
         title: "Classic Margherita Pizza",
         description: "An Italian pizza with tomato sauce, mozzarella, and basil.",
+        servings: 4,
         ingredients: ["Pizza dough", "Tomato sauce", "Mozzarella", "Basil"],
         instructions: ["Spread sauce", "Add mozzarella", "Bake"],
         category: "Italian",
@@ -67,6 +67,7 @@ exports.seedRecipes = async (req, res) => {
       {
         title: "Chicken Biryani",
         description: "A savory Indian rice and chicken dish.",
+        servings: 6,
         ingredients: ["Chicken", "Rice", "Yogurt", "Spices"],
         instructions: ["Marinate", "Layer", "Cook"],
         category: "Indian",
@@ -86,15 +87,16 @@ exports.seedRecipes = async (req, res) => {
 
 exports.createRecipe = async (req, res) => {
   try {
-    const { title, description, ingredients, instructions, category, image, cookingTime, createdBy } = req.body;
+    const { title, description, servings, ingredients, instructions, category, image, cookingTime, createdBy } = req.body;
 
-    if (!title || !description || !ingredients.length || !instructions.length || !category || !cookingTime || !createdBy) {
+    if (!title || !description || !servings || !ingredients.length || !instructions.length || !category || !cookingTime || !createdBy) {
       return res.status(400).json({ msg: "Missing required fields" });
     }
 
     const recipe = new Recipe({
       title,
       description,
+      servings,
       ingredients,
       instructions,
       category,
@@ -190,3 +192,12 @@ exports.addReview = async (req, res) => {
   }
 };
 
+module.exports = {
+  getAllRecipes: exports.getAllRecipes,
+  getRecipe: exports.getRecipe,
+  seedRecipes: exports.seedRecipes,
+  createRecipe: exports.createRecipe,
+  deleteRecipe: exports.deleteRecipe,
+  getUserRecipes: exports.getUserRecipes,
+  addReview: exports.addReview
+};

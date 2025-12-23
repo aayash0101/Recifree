@@ -31,41 +31,39 @@ const RecipeSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
   description: {
     type: String,
     required: true,
   },
-
+  servings: {
+    type: Number,
+    required: true,
+    min: 1,
+    max: 100,
+  },
   ingredients: [
     { type: String }
   ],
-
   instructions: [
     { type: String }
   ],
-
   category: {
     type: String,
     required: true,
   },
-
   image: {
     type: String,
     default: "",
   },
-
   cookingTime: {
     type: String,
     required: true,
   },
-
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
-
   reviews: {
     type: [ReviewSchema],
     default: [],
